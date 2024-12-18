@@ -60,11 +60,13 @@ function LawyersData() {
   }, []);
 
   const handleStatusChange = (checked, recordId) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === recordId ? { ...item, status: checked } : item
-      )
-    );
+    setTimeout(() => {
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === recordId ? { ...item, status: checked } : item
+        )
+      );
+    }, 0);
   };
 
   const showModal = (record) => {
@@ -128,10 +130,10 @@ function LawyersData() {
       title: "التخصصات",
       dataIndex: "specialties",
       key: "specialties",
-      render: (specialties) => (
+      render: (specialties, record) => (
         <div className="space-y-1">
           {specialties.map((specialty, index) => (
-            <Tooltip key={index} title={specialty} placement="topLeft">
+            <Tooltip key={`${record.id}-specialty-${index}`} title={specialty} placement="topLeft">
               <div className="bg-blue-50 p-1 rounded text-sm truncate max-w-[200px]">
                 {specialty}
               </div>
@@ -179,34 +181,42 @@ function LawyersData() {
       sorter: (a, b) => a.boughtLeads - b.boughtLeads,
     },
     {
-      title: "الحالة",
-      dataIndex: "status",
-      key: "status",
-      render: (status, record) => (
-        <Switch
-          checked={status}
-          onChange={(checked) => handleStatusChange(checked, record.id)}
-          checkedChildren="نشط"
-          unCheckedChildren="غير نشط"
-          className={status ? "bg-green-500" : "bg-gray-400"}
-        />
-      ),
-    },
-    {
-      title: "عرض",
+      title: "الإجراءات",
       key: "actions",
       render: (_, record) => (
-        <Button
-          type="primary"
-          icon={<EyeOutlined />}
-          onClick={() => showModal(record)}
-          className="bg-blue-500"
-          size="small"
-        >
-          عرض التفاصيل
-        </Button>
+        <div className="flex items-center gap-4" key={`actions-${record.id}`}>
+          <button
+            onClick={() => handleStatusChange(!record.status, record.id)}
+            className={`relative inline-flex items-center justify-center w-24 h-8 rounded-full transition-all duration-200 focus:outline-none ${
+              record.status ? 'bg-green-500' : 'bg-gray-200'
+            }`}
+          >
+            <span
+              className={`absolute z-10 text-xs font-medium transition-all duration-200 ${
+                record.status 
+                  ? 'text-white' 
+                  : 'text-gray-700'
+              }`}
+            >
+              {record.status ? 'نشط' : 'غير نشط'}
+            </span>
+            <span
+              className={`absolute w-6 h-6 bg-white rounded-full shadow transition-all duration-200 ${
+                record.status 
+                  ? 'right-1' 
+                  : 'left-1'
+              }`}
+            />
+          </button>
+          <button
+            onClick={() => showModal(record)}
+            className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm flex items-center gap-1"
+          >
+            <EyeOutlined /> عرض التفاصيل
+          </button>
+        </div>
       ),
-    },
+    }
   ];
 
   return (
@@ -242,8 +252,7 @@ function LawyersData() {
         <div className="overflow-x-auto">
           <Table
             columns={columns}
-            dataSource={data}
-            rowKey="id"
+            dataSource={data.map(item => ({ ...item, key: item.id }))}
             pagination={{
               pageSize: 10,
               responsive: true,
@@ -293,15 +302,15 @@ function LawyersData() {
                 </div>
                 <div className="bg-gray-50 p-3 rounded">
                   <p className="text-gray-600 mb-1">الحالة</p>
-                  <div
-                    className={`px-2 py-1 rounded-full text-center text-sm ${
-                      selectedLawyer.onlineStatus
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
+                  <span
+                    className={`inline-block px-4 py-1 rounded-full text-sm font-medium ${
+                      selectedLawyer.status 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-gray-100 text-gray-800'
                     }`}
                   >
-                    {selectedLawyer.onlineStatus ? "متصل" : "غير متصل"}
-                  </div>
+                    {selectedLawyer.status ? 'نشط' : 'غير نشط'}
+                  </span>
                 </div>
               </div>
 
@@ -309,7 +318,7 @@ function LawyersData() {
                 <p className="text-gray-600 mb-2">التخصصات</p>
                 <div className="space-y-2">
                   {selectedLawyer.specialties.map((specialty, index) => (
-                    <div key={index} className="bg-white p-2 rounded shadow-sm">
+                    <div key={`modal-specialty-${index}`} className="bg-white p-2 rounded shadow-sm">
                       {specialty}
                     </div>
                   ))}
@@ -333,21 +342,6 @@ function LawyersData() {
                   <p className="text-gray-600 mb-1">العملاء المشترى</p>
                   <p className="font-semibold">{selectedLawyer.boughtLeads}</p>
                 </div>
-              </div>
-
-              <div className="bg-gray-50 p-3 rounded">
-                <p className="text-gray-600 mb-1">الحالة</p>
-                <Switch
-                  checked={selectedLawyer.status}
-                  onChange={(checked) =>
-                    handleStatusChange(checked, selectedLawyer.id)
-                  }
-                  checkedChildren="نشط"
-                  unCheckedChildren="غير نشط"
-                  className={
-                    selectedLawyer.status ? "bg-green-500" : "bg-gray-400"
-                  }
-                />
               </div>
             </div>
           )}

@@ -107,7 +107,7 @@ function ClientData() {
         "كيف أبني علامة تجارية قوية؟",
         "ما هي أفضل طرق إدارة المخزون؟",
       ],
-      opportunities: ["تسويق وعلامات تجارية", "إدارة سلسلة التوريد"],
+      opportunities: ["تسويق وعلامات تجارية", "إدارة س��سلة التوريد"],
       status: true,
     },
     {
@@ -119,7 +119,7 @@ function ClientData() {
         "ما هي أفضل طرق إدارة المخزون؟",
         "كيف أبني علامة تجارية قوية؟",
       ],
-      opportunities: ["إدارة سلسلة ال��وريد", "تسويق وعلامات تجارية"],
+      opportunities: ["إدارة سلسلة التوريد", "تسويق وعلامات تجارية"],
       status: true,
     },
     {
@@ -249,34 +249,42 @@ function ClientData() {
       ),
     },
     {
-      title: "الحالة",
-      dataIndex: "status",
-      key: "status",
-      render: (status, record) => (
-        <Switch
-          checked={status}
-          onChange={(checked) => handleStatusChange(checked, record.id)}
-          checkedChildren="نشط"
-          unCheckedChildren="غير نشط"
-          className={status ? "bg-green-500" : "bg-gray-400"}
-        />
-      ),
-    },
-    {
-      title: "عرض",
+      title: "الإجراءات",
       key: "actions",
       render: (_, record) => (
-        <Button
-          type="primary"
-          icon={<EyeOutlined />}
-          onClick={() => showModal(record)}
-          className="bg-blue-500"
-          size="small"
-        >
-          عرض التفاصيل
-        </Button>
+        <div className="flex items-center gap-4" key={`actions-${record.id}`}>
+          <button
+            onClick={() => handleStatusChange(!record.status, record.id)}
+            className={`relative inline-flex items-center justify-center w-24 h-8 rounded-full transition-all duration-200 focus:outline-none ${
+              record.status ? 'bg-green-500' : 'bg-gray-200'
+            }`}
+          >
+            <span
+              className={`absolute z-10 text-xs font-medium transition-all duration-200 ${
+                record.status 
+                  ? 'text-white' 
+                  : 'text-gray-700'
+              }`}
+            >
+              {record.status ? 'نشط' : 'غير نشط'}
+            </span>
+            <span
+              className={`absolute w-6 h-6 bg-white rounded-full shadow transition-all duration-200 ${
+                record.status 
+                  ? 'right-1' 
+                  : 'left-1'
+              }`}
+            />
+          </button>
+          <button
+            onClick={() => showModal(record)}
+            className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm flex items-center gap-1"
+          >
+            <EyeOutlined /> عرض التفاصيل
+          </button>
+        </div>
       ),
-    },
+    }
   ];
 
   const handleSearch = (e) => {
@@ -402,17 +410,15 @@ function ClientData() {
 
               <div className="bg-gray-50 p-3 rounded">
                 <p className="text-gray-600 mb-1">الحالة</p>
-                <Switch
-                  checked={selectedUser.status}
-                  onChange={(checked) =>
-                    handleStatusChange(checked, selectedUser.id)
-                  }
-                  checkedChildren="نشط"
-                  unCheckedChildren="غير نشط"
-                  className={
-                    selectedUser.status ? "bg-green-500" : "bg-gray-400"
-                  }
-                />
+                <span
+                  className={`inline-block px-4 py-1 rounded-full text-sm font-medium ${
+                    selectedUser.status 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-gray-100 text-gray-800'
+                  }`}
+                >
+                  {selectedUser.status ? 'نشط' : 'غير نشط'}
+                </span>
               </div>
             </div>
           )}

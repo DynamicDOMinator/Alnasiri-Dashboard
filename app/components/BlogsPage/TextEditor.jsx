@@ -15,7 +15,6 @@ import {
   Typography,
   Switch,
   Modal,
-  Button,
   ConfigProvider,
   theme,
 } from "antd";
@@ -91,21 +90,36 @@ const MenuBar = ({ editor }) => {
   return (
     <div className="border-b border-gray-200 p-2">
       <div className="flex flex-wrap gap-2 mb-2">
-        <Button
-          type={editor.isActive("bold") ? "primary" : "default"}
+        <button
           onClick={() => editor.chain().focus().toggleBold().run()}
-          icon={<BoldOutlined />}
-        />
-        <Button
-          type={editor.isActive("italic") ? "primary" : "default"}
+          className={`px-4 py-1.5 rounded-md transition-all duration-200 text-sm flex items-center gap-1 ${
+            editor.isActive("bold")
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          <BoldOutlined />
+        </button>
+        <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          icon={<ItalicOutlined />}
-        />
-        <Button
-          type={editor.isActive("underline") ? "primary" : "default"}
+          className={`px-4 py-1.5 rounded-md transition-all duration-200 text-sm flex items-center gap-1 ${
+            editor.isActive("italic")
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          <ItalicOutlined />
+        </button>
+        <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          icon={<UnderlineOutlined />}
-        />
+          className={`px-4 py-1.5 rounded-md transition-all duration-200 text-sm flex items-center gap-1 ${
+            editor.isActive("underline")
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          <UnderlineOutlined />
+        </button>
 
         <select
           className="border rounded px-2 py-1"
@@ -169,31 +183,42 @@ const MenuBar = ({ editor }) => {
       </div>
 
       <div className="flex flex-wrap gap-2 mb-2">
-        <Button
-          type={editor.isActive({ textAlign: "left" }) ? "primary" : "default"}
+        <button
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          icon={<AlignLeftOutlined />}
-        />
-        <Button
-          type={
-            editor.isActive({ textAlign: "center" }) ? "primary" : "default"
-          }
+          className={`px-4 py-1.5 rounded-md transition-all duration-200 text-sm flex items-center gap-1 ${
+            editor.isActive({ textAlign: "left" })
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          <AlignLeftOutlined />
+        </button>
+        <button
           onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          icon={<AlignCenterOutlined />}
-        />
-        <Button
-          type={editor.isActive({ textAlign: "right" }) ? "primary" : "default"}
+          className={`px-4 py-1.5 rounded-md transition-all duration-200 text-sm flex items-center gap-1 ${
+            editor.isActive({ textAlign: "center" })
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          <AlignCenterOutlined />
+        </button>
+        <button
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          icon={<AlignRightOutlined />}
-        />
+          className={`px-4 py-1.5 rounded-md transition-all duration-200 text-sm flex items-center gap-1 ${
+            editor.isActive({ textAlign: "right" })
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          <AlignRightOutlined />
+        </button>
 
         <div className="relative inline-block">
           <input
             type="color"
-            onChange={(e) =>
-              editor.chain().focus().setColor(e.target.value).run()
-            }
-            className="w-8 h-8 p-1 border rounded"
+            onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+            className="w-8 h-8 p-1 border rounded cursor-pointer"
           />
         </div>
 
@@ -201,9 +226,9 @@ const MenuBar = ({ editor }) => {
           {colors.map((color) => (
             <button
               key={color}
-              className="w-6 h-6 rounded border border-gray-300"
-              style={{ backgroundColor: color }}
               onClick={() => editor.chain().focus().setColor(color).run()}
+              className="w-6 h-6 rounded border border-gray-300 transition-transform hover:scale-110"
+              style={{ backgroundColor: color }}
             />
           ))}
         </div>
@@ -233,6 +258,12 @@ const Tiptap = ({ content, onUpdate }) => {
     onUpdate: ({ editor }) => {
       onUpdate(editor.getHTML());
     },
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none'
+      }
+    },
+    immediatelyRender: false
   });
 
   return (
@@ -244,7 +275,7 @@ const Tiptap = ({ content, onUpdate }) => {
 };
 
 export default function TextEditor() {
-  const [isMounted, setIsMounted] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
@@ -271,6 +302,10 @@ export default function TextEditor() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   const handleSearch = (e) => {
     setSearchText(e.target.value.toLowerCase());
@@ -383,7 +418,7 @@ export default function TextEditor() {
 
           <div className="space-y-4 mb-4">
             <Input
-              placeholder="عنوان المقال"
+              placeholder="عنوان ال��قال"
               value={newBlog.title}
               onChange={(e) =>
                 setNewBlog((prev) => ({ ...prev, title: e.target.value }))
@@ -417,15 +452,18 @@ export default function TextEditor() {
             />
           </div>
 
-          <Button
-            type="primary"
+          <button
             onClick={handlePublishBlog}
             onMouseDown={(e) => e.preventDefault()}
-            className="bg-blue-500 mt-10 hover:bg-blue-600"
+            className={`px-4 py-2 rounded-md transition-all duration-200 text-sm font-medium ${
+              !newBlog.title || !newBlog.author || !newBlog.category
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            }`}
             disabled={!newBlog.title || !newBlog.author || !newBlog.category}
           >
             نشر المقال
-          </Button>
+          </button>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
@@ -484,10 +522,9 @@ export default function TextEditor() {
                 title: "تاريخ النشر",
                 dataIndex: "publishDate",
                 key: "publishDate",
-                sorter: (a, b) =>
-                  new Date(a.publishDate) - new Date(b.publishDate),
+                sorter: (a, b) => new Date(a.publishDate) - new Date(b.publishDate),
                 sortDirections: ["ascend", "descend"],
-                render: (date) => new Date(date).toLocaleDateString("en-US"),
+                render: (date) => new Date(date).toLocaleDateString("ar-SA"),
               },
               {
                 title: "التصنيف",
@@ -513,38 +550,52 @@ export default function TextEditor() {
                 ],
                 onFilter: (value, record) => record.status === value,
                 render: (status, record) => (
-                  <Switch
-                    checked={status}
-                    onChange={(checked) => {
+                  <button
+                    onClick={() => {
                       setBlogs((prev) =>
                         prev.map((blog) =>
                           blog.id === record.id
-                            ? { ...blog, status: checked }
+                            ? { ...blog, status: !blog.status }
                             : blog
                         )
                       );
                     }}
-                    checkedChildren="منشور"
-                    unCheckedChildren="مسودة"
-                    className={status ? "bg-green-500" : "bg-gray-400"}
-                  />
+                    className={`relative inline-flex items-center justify-center w-24 h-8 rounded-full transition-all duration-200 focus:outline-none ${
+                      status ? 'bg-green-500' : 'bg-gray-200'
+                    }`}
+                  >
+                    <span
+                      className={`absolute z-10 text-xs font-medium transition-all duration-200 ${
+                        status 
+                          ? 'text-white' 
+                          : 'text-gray-700'
+                      }`}
+                    >
+                      {status ? 'منشور' : 'مسودة'}
+                    </span>
+                    <span
+                      className={`absolute w-6 h-6 bg-white rounded-full shadow transition-all duration-200 ${
+                        status 
+                          ? 'right-1' 
+                          : 'left-1'
+                      }`}
+                    />
+                  </button>
                 ),
               },
               {
-                title: "الاجراءات",
+                title: "الإجراءات",
                 key: "actions",
                 render: (_, record) => (
-                  <Button
-                    type="primary"
+                  <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleEditClick(record);
                     }}
-                    className="bg-blue-500"
-                    icon={<EditOutlined />}
+                    className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm flex items-center gap-1"
                   >
-                    تعديل
-                  </Button>
+                    <EditOutlined /> تعديل
+                  </button>
                 ),
               },
             ]}
@@ -570,25 +621,21 @@ export default function TextEditor() {
               key="footer-buttons"
               className="mt-24 flex items-center flex-row-reverse gap-5"
             >
-              <Button
-                key="cancel"
-                onMouseDown={(e) => e.preventDefault()}
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleModalClose();
                 }}
+                className="px-4 py-1.5 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-200 text-sm"
               >
                 إلغاء
-              </Button>
-              <Button
-                key="submit"
-                type="primary"
-                onMouseDown={(e) => e.preventDefault()}
+              </button>
+              <button
                 onClick={handleEditBlog}
-                className="bg-blue-500 hover:bg-blue-600"
+                className="px-4 py-1.5 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 text-sm"
               >
                 حفظ التغييرات
-              </Button>
+              </button>
             </div>,
           ]}
           width={800}
