@@ -11,6 +11,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        sans: ["IBM Plex Sans Arabic", "sans-serif"],
+      },
     },
   },
   plugins: [],
