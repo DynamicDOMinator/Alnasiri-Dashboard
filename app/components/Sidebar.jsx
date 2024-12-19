@@ -59,7 +59,7 @@ export default function Sidebar() {
           <FaQuestion size={20} />
         </Link>
         <Link
-          href="/opportunities"
+          href="/leads"
           onClick={handleLinkClick}
           className="text-white hover:text-gray-300 p-2"
         >
@@ -139,7 +139,7 @@ export default function Sidebar() {
               <span>الاسئله</span>
             </Link>
             <Link
-              href="/opportunities"
+              href="/leads"
               onClick={handleLinkClick}
               className="flex gap-2 items-center hover:bg-gray-700 px-4 py-2 rounded"
             >
@@ -171,12 +171,12 @@ export default function Sidebar() {
         <div className="">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 bg-gray-800 text-white rounded-md focus:outline-none"
+            className="p-2 bg-gray-800 text-white rounded focus:outline-none"
           >
             {isOpen ? "✖" : "☰"}
           </button>
         </div>
-        <div className="bg-blue-500 px-2 py-2 rounded-lg ">
+        <div className="bg-blue-500 px-2 py-2 rounded ">
           <p className="text-white text-lg font-bold">مرحباً بك أحمد 👋</p>
         </div>
       </div>
